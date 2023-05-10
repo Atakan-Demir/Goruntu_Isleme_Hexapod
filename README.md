@@ -96,5 +96,6 @@ Bu projenin sonuçları, renk tabanlı görüntü işleme ve hareket kontrolü u
 
 
 -Atakan Demir (Görüntü İşleme ve Arduino)
+
 -Ahmet Emral Özcan (Mekanik, Elektronik ve Ardunio)
 
