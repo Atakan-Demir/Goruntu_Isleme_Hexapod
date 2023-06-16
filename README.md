@@ -11,6 +11,7 @@
 
 https://markwtech.com/robots/hexapod/
 https://docs.opencv.org/4.x/index.html
+https://pypi.org/project/pyzbar/
 
 
 ### PROJE GİRİŞİ
