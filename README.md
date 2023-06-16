@@ -21,7 +21,7 @@ gerçekleştirilen bir Hexapod geliştirilmiştir. Sistem, Arduino Mega ve bir R
 Model B+ arasında seri iletişim kurarak, kamera üzerinden renkleri takip etmektedir.
 
 Projenin Amacı: Bu projenin temel amacı, Arduino Mega mikrodenetleyiciyi kullanarak 
-gerçek zamanlı veri alışverişi sağlamak ve kamera üzerinden renk tespiti yapmaktır. Arduino Mega, seri iletişim protokolünü kullanarak Raspberry veri gönderirken, Python programı bu veriyi almakta ve görüntü işleme teknikleriyle renkleri tespit etmektedir. Renklerin tespiti yapıldıktan sonra, Arduino Mega'ya uygun komutlar gönderilerek belirli işlemler gerçekleştirilir.
+gerçek zamanlı veri alışverişi sağlamak ve kamera üzerinden renk tespiti yapmaktır. Arduino Mega, seri iletişim protokolünü kullanarak Raspberry veri gönderirken, Python programı bu veriyi almakta ve görüntü işleme teknikleriyle renkleri ve qr kodları tespit etmektedir. Renklerin ve qr kodların tespiti yapıldıktan sonra, Arduino Mega'ya uygun komutlar gönderilerek belirli işlemler gerçekleştirilir.
 
 QR kod okuma işlemi için https://pypi.org/project/pyzbar/ kaynak alınarak pyzbar Kütüphanesi kullanılmıştır.
 
