@@ -1,5 +1,5 @@
 # Goruntu_Isleme_Hexapod
- Sistem Analizi ve Tasarımı II Vize
+ Sistem Analizi ve Tasarımı II Vize - Final
  
 ![image](https://github.com/Atakan-Demir/Goruntu_Isleme_Hexapod/assets/101272960/c352a729-a8be-4cfe-a5b3-7280aa8852a3)
 
