@@ -35,6 +35,9 @@ Projenin Özellikleri:
 
 Bu projenin sonuçları, gerçek zamanlı veri alışverişi, görüntü işleme ve hareket kontrolü gibi konularda uygulama geliştirme ve teknoloji entegrasyonu becerilerini geliştirmek için kullanılabilir. Ayrıca, Arduino tabanlı projelerde mikrodenetleyici ve bilgisayar arasında seri iletişimi kullanma konusunda da faydalı bir deneyim sunmaktadır.
 
+Bu örnekte kullanılan qr kodun içinde “Selam Ver!”
+Anlamına gelen bir qr kod kullanılmıştır. 
+![image](https://github.com/Atakan-Demir/Goruntu_Isleme_Hexapod/assets/101272960/674e6346-e62a-4afd-9db3-8ab25a282d59)
 
 Bu proje aşağıdaki ana adımları içermektedir:
 
