@@ -22,6 +22,8 @@ Model B+ arasında seri iletişim kurarak, kamera üzerinden renkleri takip etme
 Projenin Amacı: Bu projenin temel amacı, Arduino Mega mikrodenetleyiciyi kullanarak 
 gerçek zamanlı veri alışverişi sağlamak ve kamera üzerinden renk tespiti yapmaktır. Arduino Mega, seri iletişim protokolünü kullanarak Raspberry veri gönderirken, Python programı bu veriyi almakta ve görüntü işleme teknikleriyle renkleri tespit etmektedir. Renklerin tespiti yapıldıktan sonra, Arduino Mega'ya uygun komutlar gönderilerek belirli işlemler gerçekleştirilir.
 
+QR kod okuma işlemi için https://pypi.org/project/pyzbar/ kaynak alınarak pyzbar Kütüphanesi kullanılmıştır.
+
 Projenin Özellikleri:
 
 •	Arduino Mega ile seri iletişim kurma: Arduino Mega, Raspberry Pi 3 Model B+ ile seri bağlantı kurarak veri alışverişinde bulunur. Seri iletişim protokolü kullanılarak mikrodenetleyiciye komutlar gönderilir ve veri alınır.
