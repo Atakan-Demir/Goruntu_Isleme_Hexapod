@@ -56,7 +56,6 @@ const int TIBIA_CAL[6] = {0, -3, -3, -2, -3, -1};
 //***********************************************************************
 // Variable Declarations
 //***********************************************************************
-byte gamepad_vibrate;
 
 unsigned long currentTime;            //frame timer variables
 unsigned long previousTime;
@@ -101,6 +100,14 @@ int tetrapod_case[6] = {1, 3, 2, 1, 2, 3}; //for tetrapod gait
 int sec = 1;
 int pilpin = A5;
 int pilv = 0;
+int role = 2;
+int X = 0;
+int R = 0;
+
+String data;
+String  firstVal;
+String secondVal;
+String qrVal;
 
 //***********************************************************************
 // Object Declarations
@@ -134,7 +141,8 @@ void setup()
 {
   //start serial
   Serial.begin(115200);
-
+  pinMode(role, OUTPUT);
+  digitalWrite(role, LOW);
   //attach servos
   coxa1_servo.attach(COXA1_SERVO, 610, 2400);
   femur1_servo.attach(FEMUR1_SERVO, 610, 2400);
@@ -154,11 +162,6 @@ void setup()
   coxa6_servo.attach(COXA6_SERVO, 610, 2400);
   femur6_servo.attach(FEMUR6_SERVO, 610, 2400);
   tibia6_servo.attach(TIBIA6_SERVO, 610, 2400);
-
-  gamepad_vibrate = 0;
-
-  digitalWrite[2, HIGH];
-  pinMode(2, OUTPUT);
 
   //clear offsets
   for (leg_num = 0; leg_num < 6; leg_num++)
@@ -185,18 +188,37 @@ void setup()
 //***********************************************************************
 void loop()
 {
-  pilv = analogRead(pilpin);
-  pilv = map (pilv, 0, 1023, 0, 500);
-  Serial.println(pilv);
-  if (pilv < 360)
-  {
-    digitalWrite(role, LOW);
-  }
-  else {
-    digitalWrite(role, HIGH);
+
+
+  if (Serial.available() > 0 ) {
+    data = Serial.readStringUntil(':');
+
+    if (data.substring(0) == "-") {
+      shakeHand()
+      delay(20)
+    }
+    else {
+      for (int i = 0; i < data.length(); i++) {
+        if (data.substring(i, i + 1) == ";") {
+          firstVal = data.substring(0, i);
+          secondVal = data.substring(i + 1);
+
+          X = firstVal.toInt();
+
+          R = secondVal.toInt();
+
+        }
+
+      }
+    }
+
   }
 
-  
+void shakeHand(){
+
+}
+
+
   //set up frame time
   currentTime = millis();
   if ((currentTime - previousTime) > FRAME_TIME_MS)
@@ -247,6 +269,7 @@ void loop()
 }
 
 
+
 //***********************************************************************
 // Process gamepad controller inputs
 //***********************************************************************
@@ -274,7 +297,7 @@ void process_gamepad()
     reset_position = true;
     sec = 2;
   }
-  if (ps2x.ButtonPressed(PSB_PAD_RIGHT))  //stop & select gait 3  (ps2x.ButtonPressed(PSB_PAD_RIGHT))
+  if (ps2x.ButtonPressed(PSB_PAD_RIGHT)) //stop & select gait 3  (ps2x.ButtonPressed(PSB_PAD_RIGHT))
   {
     mode = 0;
     gait = 3;
@@ -282,11 +305,11 @@ void process_gamepad()
     sec = 2;
   }
 
-  if (sec == 2)  //select walk mode  (ps2x.ButtonPressed(PSB_TRIANGLE))
+  if (sec == 3)  //select walk mode  (ps2x.ButtonPressed(PSB_TRIANGLE))
   {
     mode = 1;
     reset_position = true;
-    sec = 3;
+    sec = 4;
   }
 
   if (ps2x.ButtonPressed(PSB_SQUARE))    //control x-y-z with joysticks mode    (ps2x.ButtonPressed(PSB_SQUARE))
@@ -316,12 +339,12 @@ void process_gamepad()
     sec = 4;
   }
 
-  if (sec == 3)     //set all servos to 90 degrees for calibration          (ps2x.ButtonPressed(PSB_SELECT))
+  if (sec == 2)     //set all servos to 90 degrees for calibration          (ps2x.ButtonPressed(PSB_SELECT))
   {
     mode = 99;
     delay(1000);
     mode = 1;
-    sec = 4;
+    sec = 3;
 
   }
   if ((ps2x.ButtonPressed(PSB_L1)) || (ps2x.ButtonPressed(PSB_R1)))
@@ -442,9 +465,10 @@ void leg_IK(int leg_number, float X, float Y, float Z)
 void tripod_gait()
 {
   //read commanded values from controller
-  commandedX = 127;  //127  ----  -127
+  commandedX = X;  //127  ----  -127
   commandedY = 0;  //-127  ----  127
-  commandedR = -11;  //127  ----  -127
+  commandedR = R;  //127  ----  -127
+
 
   //if commands more than deadband then process
   if ((abs(commandedX) > 15) || (abs(commandedY) > 15) || (abs(commandedR) > 15) || (tick > 0))
@@ -484,9 +508,9 @@ void tripod_gait()
 void wave_gait()
 {
   //read commanded values from controller
-  commandedX = 127;  //127  ----  -127
+  commandedX = X;  //127  ----  -127
   commandedY = 0;  //-127  ----  127
-  commandedR = 0;  //127  ----  -127
+  commandedR = R;  //127  ----  -127
 
   //if commands more than deadband then process
   if ((abs(commandedX) > 15) || (abs(commandedY) > 15) || (abs(commandedR) > 15) || (tick > 0))
@@ -552,9 +576,9 @@ void wave_gait()
 void ripple_gait()
 {
   //read commanded values from controller
-  commandedX = 127;  //127  ----  -127
+  commandedX = X;  //127  ----  -127
   commandedY = 0;  //-127  ----  127
-  commandedR = -12;  //127  ----  -127
+  commandedR = R;  //127  ----  -127
 
   //if commands more than deadband then process
   if ((abs(commandedX) > 15) || (abs(commandedY) > 15) || (abs(commandedR) > 15) || (tick > 0))
@@ -619,9 +643,9 @@ void ripple_gait()
 void tetrapod_gait()
 {
   //read commanded values from controller
-  commandedX = 127;  //127  ----  -127
+  commandedX = X;  //127  ----  -127
   commandedY = 0;  //-127  ----  127
-  commandedR = -13;  //127  ----  -127
+  commandedR = R;  //127  ----  -127
 
   //if commands more than deadband then process
   if ((abs(commandedX) > 15) || (abs(commandedY) > 15) || (abs(commandedR) > 15) || (tick > 0))
@@ -666,16 +690,16 @@ void tetrapod_gait()
 void compute_strides()
 {
   //compute stride lengths
-  strideX = 90 * commandedX / 127;
+  strideX = 90 * commandedX / 20;
   strideY = 90 * commandedY / 127;
-  strideR = 35 * commandedR / 127;
+  strideR = 35 * commandedR / 95;
 
   //compute rotation trig
   sinRotZ = sin(radians(strideR));
   cosRotZ = cos(radians(strideR));
 
   //set duration for normal and slow speed modes
-  if (gait_speed == 0) duration = 500;
+  if (gait_speed == 0) duration = 800;
   else duration = 3240;
 }
 

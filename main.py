@@ -1,9 +1,11 @@
-import cv2
-import numpy as np
-import time
-import serial
+import cv2 # Görüntü işleme kütüphanesi
+import numpy as np # Matematiksel işlemler için kütüphane
+import time # Zaman kütüphanesi
+import serial # Ardunio ile seri haberleşme kütüphanesi
+from pyzbar import pyzbar # QR kod okuma kütüphanesi	
+
 """
-if 1 == 1:
+if 1 == 1
    
 #Ardunio Mega'ya baplancak seri portun bilgileri
     ser = serial.Serial('/dev/ttyACM0',9600,timeout=1)
@@ -16,13 +18,31 @@ if 1 == 1:
         line =ser.readline().decode('utf-8').rstrip()
         print(line)
 """
-ser = serial.Serial('/dev/ttyACM0',9600,timeout=1)
+ser = serial.Serial('/dev/ttyACM0',115200,timeout=1)
 ser.reset_input_buffer()
 # Kamera başlatma
 cap = cv2.VideoCapture(0)
 cozunurluk=(640,480)
 cozX=cozunurluk[0]
 cozY=cozunurluk[1]
+
+""" QR Kod Okuma Fonksiyonu """
+
+def qrOku(frame):
+    # QR kodu tara
+    barcodes = pyzbar.decode(frame)
+
+    # QR kodu bulunduysa içeriğini döndür
+    if len(barcodes) > 0:
+        for barcode in barcodes:
+            barcodeData = barcode.data.decode("utf-8")
+            print(barcodeData)
+            return barcodeData
+        
+    # QR kodu bulunamadıysa boş bir string döndür
+    else:
+        return ""
+
 
 def map_range(x, in_min, in_max, out_min, out_max):
   return (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
@@ -53,6 +73,7 @@ def yonMesafeHesapla(yatay,derinlik,renk):
     elif renk == "blue":
         pass
     
+
     
     print(str_deger)
     ser.write(str_deger.encode())
@@ -81,6 +102,11 @@ while True:
     #cv2.rectangle(frame, (int((cozX/2)-(0.5*(cozX/2))), int((cozY/2) - (0.5*(cozY/2)))), (int((cozX/2)+(0.5*(cozX/2))), int((cozY/2) + (0.5*(cozY/2)))), (255, 40, 255), 2)
     # Görüntüyü BGR renk uzayından HSV renk uzayına dönüştürme
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # QR kodunu tara ve içeriğini al
+    qr_code_icerik = qrOku(gray)
+
     """
     all_low=np.array([0, 0, 0])
     all_up=np.array([255, 255, 255])
@@ -91,6 +117,8 @@ while True:
         kx, ky, kw, kh = cv2.boundingRect(alan/2)
         cv2.rectangle(frame, (kx, ky), (kx+kw, ky+kh), (255, 0, 255), 2)
     """
+    
+    
     # Kırmızı renk aralığı
     lower_red1 = np.array([0, 100, 100]) #[0, 50, 50]
     upper_red1 = np.array([3, 255, 255]) #[10, 255, 255]
@@ -126,7 +154,24 @@ while True:
     is_red = np.sum(red_mask)
     is_green = np.sum(green_mask)
     is_blue = np.sum(blue_mask)
-    if is_red > 100000:
+
+    """ Eğer qr kod tespit edilirse selam ver """
+    if qr_code_icerik != "":
+        # qr kod içeriği ekran üzerinde gösterme
+        if qr_code_icerik =="Selam Ver!":
+            str_deger = "-:"
+            ser.write(str_deger.encode())
+        
+            line =ser.readline().decode('utf-8').rstrip()
+            print(line)
+            cv2.putText(frame, qr_code_icerik, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            print(qr_code_icerik)
+            time.sleep(5)
+        print(qr_code_icerik)
+        
+      
+
+    elif is_red > 100000:
         # Nesne tespiti ve kare çizme
         #print("KIRMIZI")
         contours, _ = cv2.findContours(red_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
