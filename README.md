@@ -69,6 +69,7 @@ Kullanılan Kütüphaneler:
 - numpy: Dizi işlemleri ve matematiksel işlemler için kullanılır.
 - time: Zaman gecikmesi için kullanılır.
 - serial: Arduino ile seri iletişim sağlamak için kullanılır.
+- pyzbar: QR kodları ve içeriklerini tespit etmek, okumak için kullanılan kütüphanedir.
 
 Kod Açıklaması:
 
